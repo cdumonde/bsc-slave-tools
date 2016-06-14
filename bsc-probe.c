@@ -27,10 +27,6 @@ int main(void)
 	if ((fd = open("/dev/i2c-slave", O_RDWR)) == -1) {
 		printf("could not open i2c-slave\n");
 	}
-
-	reg = ioctl(fd, I2C_SLAVE_BSC_RSR, 0);
-	printf("RSR: 0x%x\n", reg);
-
 	if ((reg & BSC_RSR_UE) != 0)
 		printf("TX Underrun Error;\n");
 	if ((reg & BSC_RSR_OE) != 0)
@@ -77,7 +73,7 @@ int main(void)
 
 	printf("RX FIFO Level: 0x%x\n", (reg & 0xf800) / 2048);
 	printf("TX FIFO Level: 0x%x\n", (reg & 0x7c0) / 64);
-
+	
 	if ((reg & BSC_FR_TXFE) != 0)
 		printf("TX Fifo Empty\n");
 	if ((reg & BSC_FR_RXFF) != 0)
@@ -90,6 +86,9 @@ int main(void)
 		printf("Transmit operation in progress.\n");
 	else
 		printf("Transmit inactive.\n");
+
+	reg = ioctl(fd, I2C_SLAVE_BSC_DR,  0);
+	printf("\nData received : 0x%x\n\n", reg & BSC_DR_DATA_MASK);
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_IFLS, 0);
 	printf("IFLS: 0x%x\n", reg);

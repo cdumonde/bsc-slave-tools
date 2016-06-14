@@ -21,6 +21,7 @@ int main(int argc, char **argv)
 	int fd;
 	uint8_t data;
 	int length;
+	int i;
 
 	int opt;
 	int mode = 0;
@@ -64,7 +65,9 @@ int main(int argc, char **argv)
 		perror("setting i2c address");
 		exit(EXIT_FAILURE);
 	}
-
+	if ((ioctl(fd,I2C_SLAVE_CLEAR_FIFOS, 0) == 0)) {
+		printf("\nFIFO Cleared\n");
+	}
 	initReceiver();
 
 	while (1) {
@@ -77,7 +80,7 @@ int main(int argc, char **argv)
 				break;
 		}
 
-		for (int i = 0; i < length; i++){
+		for (i = 0; i < length; i++){
 			data = tx_buffer[i];
 			receiveBytes(&data, 1); // I do not understand this one
 			switch (mode) {
