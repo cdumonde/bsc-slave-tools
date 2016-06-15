@@ -1,7 +1,8 @@
-#include <stdint.h>
-
 #ifndef rI2CTX_H
 #define rI2CTX_H
+
+#include <stddef.h>
+#include <stdint.h>
 
 #define RPOD_I2C_BUFFER_SIZE 2000 
 #define RPOD_I2C_CONTROL_CHAR 0xD5
@@ -17,8 +18,7 @@ void rI2CTX_beginFrame();
 void rI2CTX_CalculateChecksum(uint16_t lastByte);
 uint16_t rI2CTX_endFrame();
 
-enum rI2C_paramTypes
-{
+enum rI2C_paramTypes {
 	rI2C_INT8 = 0x11,
 	rI2C_UINT8 = 0x12,
 	rI2C_INT16 = 0x21,
@@ -31,15 +31,27 @@ enum rI2C_paramTypes
 	rI2C_DOUBLE = 0x83
 };
 
-void rI2CTX_addParameter(uint8_t index, int8_t data);
-void rI2CTX_addParameter(uint8_t index, uint8_t data);
-void rI2CTX_addParameter(uint8_t index, int16_t data);
-void rI2CTX_addParameter(uint8_t index, uint16_t data);
-void rI2CTX_addParameter(uint8_t index, int64_t data);
-void rI2CTX_addParameter(uint8_t index, uint64_t data);
-void rI2CTX_addParameter(uint8_t index, int32_t data);
-void rI2CTX_addParameter(uint8_t index, uint32_t data);
-void rI2CTX_addParameter(uint8_t index, float data);
-void rI2CTX_addParameter(uint8_t index, double data);
+void rI2CTX_addParameter(enum rI2C_paramTypes prefix, uint8_t index, size_t data_len, uint64_t data);
+
+#define rI2CTX_addParameter_i8(_index, _data) \
+	rI2CTX_addParameter(rI2C_INT8, _index, sizeof(int8_t), (uint64_t) _data)
+#define rI2CTX_addParameter_u8(_index, _data) \
+	rI2CTX_addParameter(rI2C_UINT8, _index, sizeof(uint8_t), (uint64_t) _data)
+#define rI2CTX_addParameter_i16(_index, _data) \
+	rI2CTX_addParameter(rI2C_INT16, _index, sizeof(int16_t), (uint64_t) _data)
+#define rI2CTX_addParameter_u16(_index, _data) \
+	rI2CTX_addParameter(rI2C_UINT16, _index, sizeof(uint16_t), (uint64_t) _data)
+#define rI2CTX_addParameter_i32(_index, _data) \
+	rI2CTX_addParameter(rI2C_INT32, _index, sizeof(int32_t), (uint64_t) _data)
+#define rI2CTX_addParameter_u32(_index, _data) \
+	rI2CTX_addParameter(rI2C_UINT32, _index, sizeof(uint32_t), (uint64_t) _data)
+#define rI2CTX_addParameter_i64(_index, _data) \
+	rI2CTX_addParameter(rI2C_INT64, _index, sizeof(int64_t), (uint64_t) _data)
+#define rI2CTX_addParameter_u64(_index, _data) \
+	rI2CTX_addParameter(rI2C_UINT64, _index, sizeof(uint64_t), (uint64_t) _data)
+#define rI2CTX_addParameter_f(_index, _data) \
+	rI2CTX_addParameter(rI2C_FLOAT, _index, sizeof(float), (uint64_t) _data)
+#define rI2CTX_addParameter_d(_index, _data) \
+	rI2CTX_addParameter(rI2C_DOUBLE, _index, sizeof(double), (uint64_t) _data)
 
 #endif

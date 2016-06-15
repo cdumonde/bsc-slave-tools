@@ -1,7 +1,8 @@
-#include <stdint.h>
-
 #ifndef TeensyI2CReceiver_H
 #define TeensyI2CReceiver_H
+
+#include <stdint.h>
+#include <stdbool.h>
 
 #define I2C_BUFFER_SIZE 2000 
 #define I2C_CONTROL_CHAR 0xD5
@@ -17,6 +18,6 @@ extern uint16_t bufferLength;
 void initReceiver();
 void receiveBytes(uint8_t* data, uint16_t length);
 void processBuffer();
-_Bool processFrame(uint8_t *frameBuffer, uint16_t length);
+bool processFrame(uint8_t *frameBuffer, uint16_t length);
 
 #endif 

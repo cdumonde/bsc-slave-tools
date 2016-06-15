@@ -68,42 +68,42 @@ int main(int argc, char *argv[]){
 			case 1 :{
 				int8_t data1;
 				data1 = atoi(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data1);
+				rI2CTX_addParameter_i8(index, data1);
 				break;}
 			case 2:{
 				uint8_t data2;
 				data2 = atoi(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data2);
+				rI2CTX_addParameter_u8(index, data2);
 				break; }
 			case 3:{
 				int16_t data3;
 				data3 = atoi(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data3);
+				rI2CTX_addParameter_i16(index, data3);
 				break;}
 			case 4:{
 				uint16_t data4;
 				data4 = atoi(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data4);
+				rI2CTX_addParameter_i16(index, data4);
 				break;}
 			case 5:{
 				int64_t data5;
 				data5 = atoll(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data5);
+				rI2CTX_addParameter_i64(index, data5);
 				break;}
 			case 6:{
 				uint64_t data6;
 				data6 = atoll(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data6);
+				rI2CTX_addParameter_i64(index, data6);
 				break;}
 			case 7:{
 				float data7;
 				data7 = atof(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data7);
+				rI2CTX_addParameter_f(index, data7);
 				break;}
 			case 8:{
 				double data8;
 				data8 = atof(argv[2 + 3 * i + 1]);
-				rI2CTX_addParameter(index, data8);
+				rI2CTX_addParameter_d(index, data8);
 				break;}
 			default: printf("Invalid data type.\n"); break;
 		}

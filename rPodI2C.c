@@ -28,8 +28,7 @@ void receiveBytes(uint8_t* data, uint16_t length)
 	else {}//All is well, continue on
 
 	//Got some bad data at some point
-	if (bufferLength + length > I2C_BUFFER_SIZE)
-	{
+	if (bufferLength + length > I2C_BUFFER_SIZE) {
 		bufferLength = 0;
 		bufferBegin = 0;
 	}
@@ -49,54 +48,45 @@ void processBuffer()
 	int bufferBeginJump = 0;
 
 	//Search for a full frame
-	for (i = 0; i < (bufferLength-1); i++)
-	{
+	for (i = 0; i < (bufferLength-1); i++) {
 		//Is this a start code?
-		if (buffer2[(bufferBegin + i) % I2C_BUFFER_SIZE] == I2C_CONTROL_CHAR && buffer2[((bufferBegin + i + 1) % I2C_BUFFER_SIZE)] == I2C_FRAME_START)
-		{
+		if (buffer2[(bufferBegin + i) % I2C_BUFFER_SIZE] == I2C_CONTROL_CHAR && buffer2[((bufferBegin + i + 1) % I2C_BUFFER_SIZE)] == I2C_FRAME_START) {
 			//See if we should have the whole header yet
-			if (i + 5 < bufferLength)
-			{
+			if (i + 5 < bufferLength) {
 				//Grab the length of the frame from the header
 				uint16_t frameLength = buffer2[(bufferBegin + i + 2) % I2C_BUFFER_SIZE];
 				int headerLength = 4;
-				if (frameLength == I2C_CONTROL_CHAR){
+				if (frameLength == I2C_CONTROL_CHAR) {
 					frameLength = frameLength * 256 + buffer2[(bufferBegin + i + 4) % I2C_BUFFER_SIZE];
 					headerLength++;
 					if (buffer2[(bufferBegin + i + 4) % I2C_BUFFER_SIZE] == I2C_CONTROL_CHAR)
 						headerLength++;
-				}
-				else
+				} else
 					frameLength = frameLength*256 + buffer2[(bufferBegin + i + 3) % I2C_BUFFER_SIZE];
 
 				//See if we have the end of the frame in the buffer yet
-				if (i + headerLength + frameLength <= bufferLength)
-				{
+				if (i + headerLength + frameLength <= bufferLength) {
 					//Copy the frame into a flat buffer
 					//This step isn't 100% necessary but it does make processing the frame a bit easier to follow
 					int x;
-					for (x = 0; x < (frameLength + headerLength); x++)
-					{
+					for (x = 0; x < (frameLength + headerLength); x++) {
 						frameBuffer[x] = buffer2[(x+i+bufferBegin) % I2C_BUFFER_SIZE];
 					}
 
 					//Process the frame!
-					if (processFrame(frameBuffer, frameLength + 4)){
+					if (processFrame(frameBuffer, frameLength + 4)) {
 						i += frameLength + headerLength;
 						bufferBeginJump += headerLength + frameLength;
 					}
-				}
-				else{
+				} else {
 					//We have a start code, but not enough data for a full frame yet
 					i = bufferLength;
 				}
-			}
-			else{
+			} else {
 				//Don't have the full header yet, nothing to do for now
 				i = bufferLength - 1;
 			}
-		}
-		else{
+		} else {
 			//Not sure what we got sent, but it's not a start code so advance the buffer.
 			bufferBeginJump++;
 		}
@@ -107,14 +97,14 @@ void processBuffer()
 
 }
 
-_Bool processFrame(uint8_t *frameBuffer, uint16_t length)
+bool processFrame(uint8_t *frameBuffer, uint16_t length)
 {
 
 	int x;
 
 	//Check the start and end headers
 	if (frameBuffer[0] != I2C_CONTROL_CHAR || frameBuffer[1] != I2C_FRAME_START || frameBuffer[length - 4] != I2C_CONTROL_CHAR || frameBuffer[length - 3] != I2C_FRAME_END)
-		return;
+		return false;
 
 	int i = 0;
 	uint8_t checksum = 0;
@@ -123,33 +113,25 @@ _Bool processFrame(uint8_t *frameBuffer, uint16_t length)
 
 	if (frameBuffer[length - 2] != checksum){
 		return false;
-	}
-	else {} //All good, continue on
+	} else {} //All good, continue on
 
 	//Shorten any escaped data now that we've isolated a single frame
-	for (i = 2; i < length-1; i++)
-	{
-		if (frameBuffer[i] == I2C_CONTROL_CHAR && frameBuffer[i + 1] == I2C_CONTROL_CHAR)
-		{
+	for (i = 2; i < length-1; i++) {
+		if (frameBuffer[i] == I2C_CONTROL_CHAR && frameBuffer[i + 1] == I2C_CONTROL_CHAR) {
 			int x;
-			for (x = i + 1; x < length - 1; x++)
-			{
+			for (x = i + 1; x < length - 1; x++) {
 				frameBuffer[x] = frameBuffer[x + 1];
 			}
 			frameBuffer[length - 1] = 0x00;
-		}
-		else{}//no escaped data here, continue on.
+		} else {} //no escaped data here, continue on.
 	}
 
 	uint16_t position = 4;
 	uint64_t rawData;
-	while (position < length)
-	{
-		if (frameBuffer[position] == 0xD5)
-		{
+	while (position < length) {
+		if (frameBuffer[position] == 0xD5) {
 			position++;
-			switch (frameBuffer[position])
-			{
+			switch (frameBuffer[position]) {
 			case I2C_PARAMETER_START:
 				{
 					position++;
@@ -175,8 +157,8 @@ _Bool processFrame(uint8_t *frameBuffer, uint16_t length)
 						rawFloatingData = rawFloatingData >> 32;
 						memcpy(&floatingType,&rawFloatingData,4);
 
-						switch (frameBuffer[position])
-						{/*
+						switch (frameBuffer[position]) {
+						/*
 						case 0x11: printw("int8 %d\n", (int8_t)rawData); break;
 						case 0x12: printw("uint8 %u\n", (uint8_t)rawData); break;
 						case 0x21: printw("int16 %d\n", (int16_t)ntohs((uint16_t)rawData)); break;
@@ -201,19 +183,18 @@ _Bool processFrame(uint8_t *frameBuffer, uint16_t length)
 						case 0x83: printf("%f, ", doubleType); break;
 						}
 						//refresh();
-					}
-					else if (dataType == 0){
+					} else if (dataType == 0) {
 
-					}
-					else{}
+					} else {}
 
 					position += dataSize+2;
 				}
-					break;
-				case I2C_FRAME_END:printf("\n"); return; break;
+				break;
+			case I2C_FRAME_END:
+				printf("\n");
+				return false;
 			}
-		}
-		else{
+		} else { // frameBuffer[position] != 0x5d
 			//Should report an error
 			position++;
 		}
