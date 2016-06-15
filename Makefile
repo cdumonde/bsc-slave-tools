@@ -1,7 +1,10 @@
 CC=g++
 
-all: i2ccat i2ccatChar i2ccatHex setParameter
+all: bsc-probe i2ccat i2ccatChar i2ccatHex setParameter
 
+bsc-probe:
+	$(CC) bsc-probe.c -o bsc-probe
+	
 i2ccat:
 	$(CC) rPodI2C.c i2ccat.c -o i2ccat
 

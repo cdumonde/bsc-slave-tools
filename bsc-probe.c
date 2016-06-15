@@ -1,3 +1,4 @@
+#include <sys/ioctl.h>
 #include<stdio.h>
 #include<unistd.h>
 #include<fcntl.h>
@@ -25,7 +26,7 @@ int main(void){
 	unsigned long reg;
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_RSR, 0);
-	printf("RSR: %x\n", reg);
+	printf("RSR: %lx\n", reg);
 
 	if ((reg&BSC_RSR_UE) != 0)
 		printf("TX Underrun Error;\n");
@@ -36,7 +37,7 @@ int main(void){
 	printf("Slave Address: %d\n", reg);
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_CR, 0);
-	printf("CR: %x\n", reg);
+	printf("CR: %lx\n", reg);
 
 	if ((reg&BSC_CR_BRK) != 0)
 		printf("Break Enabled (I2C TX functions disabled)\n");
@@ -69,10 +70,10 @@ int main(void){
 		printf("Device Disabled\n");
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_FR, 0);
-	printf("FR: %x\n", reg);
+	printf("FR: %lx\n", reg);
 
-	printf("RX FIFO Level: %d\n", (reg & 0xf800) / 2048);
-	printf("TX FIFO Level: %d\n", (reg & 0x7c0) / 64);
+	printf("RX FIFO Level: %ld\n", (reg & 0xf800) / 2048);
+	printf("TX FIFO Level: %ld\n", (reg & 0x7c0) / 64);
 
 	if ((reg&BSC_FR_TXFE) != 0)
 		printf("TX Fifo Empty\n");
@@ -88,22 +89,22 @@ int main(void){
 		printf("Transmit inactive.\n");
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_IFLS, 0);
-	printf("IFLS: %x\n", reg);
+	printf("IFLS: %lx\n", reg);
 
-	printf("RX FIFO Interrupt trigger: %d\n", (reg & 0x0038) / 8);
-	printf("TX FIFO interrupt trigger: %d\n", (reg & 0x7));
+	printf("RX FIFO Interrupt trigger: %ld\n", (reg & 0x0038) / 8);
+	printf("TX FIFO interrupt trigger: %ld\n", (reg & 0x7));
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_IMSC, 0);
-	printf("IMSC: %x\n", reg);
+	printf("IMSC: %lx\n", reg);
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_RIS, 0);
-	printf("RIS: %x\n", reg);
+	printf("RIS: %lx\n", reg);
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_MIS, 0);
-	printf("MIS: %x\n", reg);
+	printf("MIS: %lx\n", reg);
 
 	reg = ioctl(fd, I2C_SLAVE_BSC_ICR, 0);
-	printf("ICR: %x\n", reg);
+	printf("ICR: %lx\n", reg);
 
 
 	close(fd);

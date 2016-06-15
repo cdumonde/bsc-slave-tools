@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "rPodI2C.h"
 #include <stdint.h>
 #include "string.h"

@@ -1,7 +1,8 @@
-#include<stdio.h>
-#include<unistd.h>
-#include<fcntl.h>
-#include<curses.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <curses.h>
 #include "bsc-slave.h"
 #include "rPodI2C.h"
 
