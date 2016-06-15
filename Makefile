@@ -1,4 +1,4 @@
-TOOLS=bsc-probe i2ccat i2ccatChar i2ccatHex i2csetparm
+TOOLS=bsc-probe i2ccat i2csetparm
 
 all: $(TOOLS)
 clean:
@@ -8,6 +8,4 @@ clean:
 
 bsc-probe: bsc-probe.o
 i2ccat: i2ccat.o rPodI2C.o
-i2ccatChar: i2ccatChar.o rPodI2C.o
-i2ccatHex: i2ccatHex.o rPodI2C.c
 i2csetparm: i2csetparm.o rI2CTX.o
