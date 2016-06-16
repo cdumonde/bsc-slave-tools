@@ -1,19 +1,11 @@
-CC=g++
+TOOLS=bsc-probe i2ccat i2csetparm
 
-all: bsc-probe i2ccat i2ccatChar i2ccatHex setParameter
+all: $(TOOLS)
+clean:
+	$(RM) $(patsubst %,%.o,$(TOOLS)) \
+    rPodI2C.o rI2CTX.o \
+    $(TOOLS)
 
-bsc-probe:
-	$(CC) bsc-probe.c -o bsc-probe
-	
-i2ccat:
-	$(CC) rPodI2C.c i2ccat.c -o i2ccat
-
-i2ccatChar:
-	$(CC) rPodI2C.c i2ccatChar.c -o i2ccatChar
-	
-i2ccatHex:
-	$(CC) rPodI2C.c i2ccatHex.c -o i2ccatHex
-		
-setParameter:
-	$(CC) rI2CTX.cpp setParameter.cpp -o i2cSetParameter
-	
+bsc-probe: bsc-probe.o
+i2ccat: i2ccat.o rPodI2C.o
+i2csetparm: i2csetparm.o rI2CTX.o
